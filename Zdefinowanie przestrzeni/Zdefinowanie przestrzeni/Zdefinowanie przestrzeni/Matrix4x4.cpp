@@ -61,6 +61,14 @@ Matrix4x4 Matrix4x4::operator+(const Matrix4x4& mat) const
 	return result;
 }
 
+Matrix4x4 Matrix4x4::operator-(const Matrix4x4& mat) const
+{
+	Matrix4x4 result;
+	for (int i = 0; i < 16; ++i)
+		result.entries[i] = entries[i] - mat.entries[i];
+	return result;
+}
+
 Matrix4x4 Matrix4x4::operator*(const float f) const
 {
 	Matrix4x4 result;

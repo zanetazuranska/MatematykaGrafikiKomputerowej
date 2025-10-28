@@ -248,6 +248,7 @@ bool test_transpose_and_inverse() {
         9, 10, 11, 12,
         0, 0, 0, 1
     );
+
     Matrix4x4 At = A.getTransposed();
     for (int r = 0; r < 4; ++r) for (int c = 0; c < 4; ++c)
         if (!approxEqual(At.entries[r * 4 + c], A.entries[c * 4 + r])) {
@@ -312,5 +313,6 @@ int main() {
     run(test_transpose_and_inverse, "transpose_and_inverse");
 
     std::cout << "Passed " << passed << " / " << total << " tests." << std::endl;
+
     return (passed == total) ? 0 : 1;
 }

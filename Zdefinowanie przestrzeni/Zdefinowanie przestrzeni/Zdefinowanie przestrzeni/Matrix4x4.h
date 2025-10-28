@@ -20,6 +20,7 @@ public:
 	~Matrix4x4();
 
 	Matrix4x4 operator+(const Matrix4x4& mat) const;
+	Matrix4x4 operator-(const Matrix4x4& mat) const;
 	Matrix4x4 operator*(const float f) const;
 	Matrix4x4 operator*(const Matrix4x4& mat) const;
 	bool operator==(const Matrix4x4& other) const noexcept;
