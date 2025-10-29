@@ -314,5 +314,71 @@ int main() {
 
     std::cout << "Passed " << passed << " / " << total << " tests." << std::endl;
 
+    Matrix4x4 A(
+        1, 5, 3, 4,
+        5, 8, 7, 8,
+        9, 2, 11, 12,
+        0, 0, 1, 1
+    );
+
+    Matrix4x4 B(
+        1, 2, 1, 1,
+        2, 1, 2, 2,
+        3, 3, 1, 2,
+        4, 4, 4, 1
+    );
+
+    int skalar = 3;
+
+    std::cout << "\n Dane: \n";
+    std::cout<<"Macierz A: " << A << "\n";
+    std::cout<<"Macierz B: " << B << "\n";
+    std::cout << "Skalar: " << skalar << "\n";
+
+    std::cout << "\nWynik dodawania macierzy: " << A + B << "\n";
+    std::cout << "\nWynik odejmowania macierzy: " << A - B << "\n";
+    std::cout << "\nWynik mnozenia przez skalar macierzy A: " << A * 3 << "\n";
+    std::cout << "\nWynik mnozenia macierzy A*B: " << A * B << "\n";
+
+    Matrix4x4 i(true);
+    std::cout << "\nTworzenie macierzy jednostkowej: " << i << "\n";
+
+    std::cout << "\nMacierz odwrotna do macierzy A: " << A.getInversed() << "\n";
+    std::cout << "\nTranspozycja macierzy A: " << A.getTransposed() << "\n";
+
+    Vector transform(2.0f, 5.0f, 3.0f);
+    i.setTranslation(transform);
+    std::cout << "\nTransformacje o wektor: (" << transform.x << ", " << transform.y << ", " << transform.z;
+    std::cout<<") przedstawiona za pomoca macierzy wyglada nastepujaco:\n"<<i<<"\n";
+
+    Vector scale(1.0f, 2.0f, 3.0f);
+    i.setScale(scale);
+    std::cout << "\nSkalowanie o wektor: (" << scale.x << ", " << scale.y << ", " << scale.z;
+    std::cout << ") przedstawiona za pomoca macierzy wyglada nastepujaco:\n" << i << "\n";
+
+    float angle = 90.0f * (M_PI / 180.0f);
+    std::cout << "\nObrot na osi X o 90 stopni: " << Matrix4x4::rotationX(angle)<<"\n";
+    std::cout << "\nObrot na osi Y o 90 stopni: " << Matrix4x4::rotationY(angle)<<"\n";
+    std::cout << "\nObrot na osi Z o 90 stopni: " << Matrix4x4::rotationZ(angle)<<"\n";
+
+    float angleX = 90.0f * (M_PI / 180.0f);
+    float angleY = 45.0f * (M_PI / 180.0f);
+    float angleZ = 90.0f * (M_PI / 180.0f);
+    Vector rotate(angleX, angleY, angleZ);
+    i.setRotation(rotate);
+    std::cout << "\nObrot o 90 stopni na osi X, 45 na Y i 90 na Z: " << i << "\n";
+
+    i = Matrix4x4(true);
+    std::cout << "\nSkladanie przeksztalcen np transformacja i skala: \n" << i.translate(transform).scale(scale);
+
+    Vector v1 = transformPoint(Matrix4x4::rotationY(angle), Vector(1.0f, 0.0f, 0.0f));
+    std::cout << "\n\nObrocenie wektora na osi Y o 90 stopni: (" << v1.x << ", " << v1.y << ", " << v1.z << ") ";
+
+    std::cout << "\n\nBrak przemiennosci mnozenia macierzy:\n";
+    std::cout << "Mnozenie A*B: \n" << A * B;
+    std::cout << "\nMnozenie B*A: \n" << B*A;
+
+
+
     return (passed == total) ? 0 : 1;
 }

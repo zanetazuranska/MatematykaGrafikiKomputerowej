@@ -318,7 +318,7 @@ double Matrix4x4::cofactor(int row, int col) const
 std::ostream& operator<<(std::ostream& os, const Matrix4x4& m)
 {
 	constexpr int width = 10;
-	constexpr int prec = 6;
+	constexpr int prec = 2;
 	os << std::fixed << std::setprecision(prec);
 	os << "[\n";
 	for (int r = 0; r < 4; ++r) {
