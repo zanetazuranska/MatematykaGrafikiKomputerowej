@@ -128,11 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Matrix4x4.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Zdefinowanie przestrzeni.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

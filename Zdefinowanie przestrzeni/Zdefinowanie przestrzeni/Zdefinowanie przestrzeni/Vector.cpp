@@ -26,6 +26,12 @@ void Vector::operator+=(const Vector& v) {
 	z += v.z;
 }
 
+Vector Vector::operator+(const Vector& v)
+{
+	Vector pom(x + v.x, y + v.y, z + v.z);
+	return pom;
+}
+
 void Vector::operator-=(const Vector& v) {
 	x -= v.x;
 	y -= v.y;
@@ -47,6 +53,16 @@ void Vector::operator*=(float f) {
 	this->x = x * f;
 	this->y = y * f;
 	this->z = z * f;
+}
+
+Vector Vector::operator*(float f)
+{
+	Vector pom;
+	pom.x = x * f;
+	pom.y = y * f;
+	pom.z = z * f;
+
+	return pom;
 }
 
 float Vector::length() {
