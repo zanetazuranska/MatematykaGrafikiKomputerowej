@@ -1,6 +1,7 @@
 #include "Vector.h"
 #include <stdexcept>
-#include <cmath> 
+#include <cmath>
+#include <iostream> 
 
 Vector::Vector() : x(0), y(0), z(0) {}
 
@@ -26,7 +27,7 @@ void Vector::operator+=(const Vector& v) {
 	z += v.z;
 }
 
-Vector Vector::operator+(const Vector& v)
+Vector Vector::operator+(const Vector& v) const
 {
 	Vector pom(x + v.x, y + v.y, z + v.z);
 	return pom;
@@ -55,7 +56,7 @@ void Vector::operator*=(float f) {
 	this->z = z * f;
 }
 
-Vector Vector::operator*(float f)
+Vector Vector::operator*(float f) const
 {
 	Vector pom;
 	pom.x = x * f;
@@ -65,7 +66,7 @@ Vector Vector::operator*(float f)
 	return pom;
 }
 
-float Vector::length() {
+float Vector::length() const {
 	return (float) std::sqrt(x * x + y * y + z * z);
 }
 
@@ -79,7 +80,7 @@ void Vector::normalize() {
 	}
 }
 
-Vector Vector::dot(Vector v) {
+Vector Vector::dot(Vector v) const {
 	Vector result;
 	result.x = this->x * v.x;
 	result.y = this->y * v.y;
@@ -88,16 +89,21 @@ Vector Vector::dot(Vector v) {
 	return result;
 }
 
-float Vector::dotProduct(Vector v) {
+float Vector::dotProduct(Vector v) const {
 	Vector result = dot(v);
 	return result.x + result.y + result.z;
 }
 
-Vector Vector::cross(Vector v) {
+Vector Vector::cross(Vector v) const {
 	Vector result;
 	result.x = this->y * v.z - this->z * v.y;
 	result.y = this->z * v.x - this->x * v.z;
 	result.z = this->x * v.y - this->y * v.x;
 
 	return result;
+}
+
+std::ostream& operator<<(std::ostream& os, const Vector& v) {
+	os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+	return os;
 }
