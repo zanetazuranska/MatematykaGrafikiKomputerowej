@@ -39,6 +39,14 @@ void Vector::operator-=(const Vector& v) {
 	z -= v.z;
 }
 
+Vector Vector::operator-(const Vector& v) {
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
+
+	return Vector(x, y, z);
+}
+
 void Vector::operator/=(float f) {
 	if (f != 0) {
 		this->x = x / f;

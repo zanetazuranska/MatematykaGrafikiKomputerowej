@@ -1,111 +1,156 @@
 ﻿#define _USE_MATH_DEFINES
-#include <iostream>
+#define NOMINMAX
+
 #include <cmath>
+#include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>   
+#include <conio.h>           
+#include <windows.h>   
+
 #include "Matrix4x4.h"
 #include "Vector.h"
 #include "Quaternion.h"
 #include "Geometry.h"
 
-int main() {
-    std::cout << std::fixed;
-    std::cout.precision(4);
+bool intersectCube(const Ray& ray)
+{
+    const float minB = -1.0f;
+    const float maxB = 1.0f;
 
-    // 1. Punkt przeciecia dwoch prostych A i B
-    // A = (2, -4, 0) + t * (3, 1, 5)
-    Vector originA(2.0f, -4.0f, 0.0f);
-    Vector directionA(3.0f, 1.0f, 5.0f);
-    Line lineA(originA, directionA);
-    
-    // B = (2, -4, 0) + s * (1, -5, 3)
-    Vector originB(2.0f, -4.0f, 0.0f);
-    Vector directionB(1.0f, -5.0f, 3.0f);
-    Line lineB(originB, directionB);
-    
-    LineLineIntersection result = Geometry::intersect(lineA, lineB);
+    float tMin = -1e9f;
+    float tMax = 1e9f;
 
-    std::cout << "Zadanie 1. Punkt przeciecia dwoch prostych A i B" << std::endl;
-    std::cout << "Prosta A:\n" << lineA << std::endl;
-    std::cout << "Prosta B:\n" << lineB << std::endl;
-    std::cout << "Punkt przeciecia:\n" << result << '\n';
-    
-    // 2. Kąt pomiędzy prostymi A i B
-    std::cout << "Zadanie 2. Kat pomiedzy prostymi A i B" << std::endl;
-    float angleDeg = Geometry::angleBetweenDegrees(lineA, lineB);
-    std::cout << "Kat (stopnie): " << angleDeg << "\n\n";
-    
-    // 3. Punkt przecięcia prostej C z płaszczyzną P
-    // C = (-2, 2, -1) + t * (3, -1, 2)
-    Vector originC(-2.0f, 2.0f, -1.0f);
-    Vector directionC(3.0f, -1.0f, 2.0f);
-    Line lineC(originC, directionC);
+    auto checkAxis = [&](float origin, float dir)
+        {
+            float t1 = (minB - origin) / dir;
+            float t2 = (maxB - origin) / dir;
+            if (t1 > t2) std::swap(t1, t2);
+            tMin = std::max(tMin, t1);
+            tMax = std::min(tMax, t2);
+        };
 
-    // P: 2x + 3y + 3z - 8 = 0
-    Vector normalP1(2.0f, 3.0f, 3.0f);
-    float dP1 = -8.0f;
-    Plane planeP1(normalP1, dP1);
+    if (std::fabs(ray.direction.x) < 1e-6f) {
+        if (ray.origin.x < minB || ray.origin.x > maxB) return false;
+    }
+    else checkAxis(ray.origin.x, ray.direction.x);
 
-    LinePlaneIntersection result2 = Geometry::intersect(lineC, planeP1);
-    std::cout << "Zadanie 3. Punkt przeciecia prostej C z plaszczyzna P1" << std::endl;
-    std::cout << "Prosta C:\n" << lineC << std::endl;
-    std::cout << "Plaszczyzna P1:\n" << planeP1 << std::endl;
-    std::cout << "Punkt przeciecia:\n" << result2 << '\n';
-    
-    // 4. Kąt pomiędzy prostą C a płaszczyzną P1
-    std::cout << "Zadanie 4. Kat pomiedzy prosta C a plaszczyzna P1" << std::endl;
-    float angleDeg2 = Geometry::angleBetweenDegrees(lineC, planeP1);
-    std::cout << "Kat (stopnie): " << angleDeg2 << "\n\n";
-    
-    // 5 Prosta przecięcia płaszczyzn P2 i P3
-    // P2: 2x - y + z - 8 = 0
-    Vector normalP2(2.0f, -1.0f, 1.0f);
-    float dP2 = -8.0f;
-    Plane planeP2(normalP2, dP2);
+    if (std::fabs(ray.direction.y) < 1e-6f) {
+        if (ray.origin.y < minB || ray.origin.y > maxB) return false;
+    }
+    else checkAxis(ray.origin.y, ray.direction.y);
 
-    // P3: 4x + 3y + z + 14 = 0
-    Vector normalP3(4.0f, 3.0f, 1.0f);
-    float dP3 = 14.0f;
-    Plane planeP3(normalP3, dP3);
+    if (std::fabs(ray.direction.z) < 1e-6f) {
+        if (ray.origin.z < minB || ray.origin.z > maxB) return false;
+    }
+    else checkAxis(ray.origin.z, ray.direction.z);
 
-    PlanePlaneIntersection result3 = Geometry::intersect(planeP2, planeP3);
-    std::cout << "Zadanie 5. Prosta przeciecia plaszczyzn P2 i P3" << std::endl;
-    std::cout << "Plaszczyzna P2:\n" << planeP2 << std::endl;
-    std::cout << "Plaszczyzna P3:\n" << planeP3 << std::endl;
-    std::cout << "Prosta przeciecia:\n" << result3 << '\n';
-    
-    // 6. Kąt pomiędzy płaszczyznami P2 i P3
-    std::cout << "Zadanie 6. Kat pomiedzy plaszczyznami P2 i P3" << std::endl;
-    float angleDeg3 = Geometry::angleBetweenDegrees(planeP2, planeP3);
-    std::cout << "Kat (stopnie): " << angleDeg3 << "\n\n";
-    
-    // 7. Punkt przecięcia odcinków D i E
-    // D = (5, 5, 4); D' (10, 10, 6)
-    Vector pointD1(5.0f, 5.0f, 4.0f);
-    Vector pointD2(10.0f, 10.0f, 6.0f);
-    LineSegment segmentD(pointD1, pointD2);
+    return tMax >= tMin && tMax >= 0.0f;
+}
 
-    // E = (5, 5, 5); E' = (10, 10, 3)
-    Vector pointE1(5.0f, 5.0f, 5.0f);
-    Vector pointE2(10.0f, 10.0f, 3.0f);
-    LineSegment segmentE(pointE1, pointE2);
+int main()
+{
+    const int W = 60;
+    const int H = 60;
 
-    LineSegmentIntersection result4 = Geometry::intersect(segmentD, segmentE);
-    std::cout << "Zadanie 7. Punkt przeciecia odcinkow D i E" << std::endl;
-    std::cout << "Odcinek D:\n" << segmentD << std::endl;
-    std::cout << "Odcinek E:\n" << segmentE << std::endl;
-    std::cout << "Punkt przeciecia:\n" << result4 << '\n';
-    
-    // 8. Punkt przecięcia sfery S z prostą F
-    // S: Środek (0, 0, 0), promień sqrt(26)
-    Sphere sphereS(Vector(0.0f, 0.0f, 0.0f), std::sqrt(26.0f));
+    float camYawDeg = 0.0f;     // (prawo/lewo)
+    float camPitchDeg = 0.0f;   // (góra/dół)
+    float camRollDeg = 0.0f;    // przechylenie
+    float camDist = 5.0f;       
 
-    // F = (3, -1, -2); F' = (5, 3, -4)
-    Line lineF(Vector(3.0f, -1.0f, -2.0f), Vector(5.0f, 3.0f, -4.0f), true);
-    LineSphereIntersection result5 = Geometry::intersect(lineF, sphereS);
-    std::cout << "Zadanie 8. Punkt przeciecia sfery S z prosta F" << std::endl;
-    std::cout << "Sfera S:\n" << sphereS << std::endl;
-    std::cout << "Prosta F:\n" << lineF << std::endl;
-    std::cout << "Punkt(y) przeciecia:\n" << result5 << '\n';
+    const float degToRad = M_PI / 180.0f;
+
+    std::vector<std::string> screen(H, std::string(W, '.'));
+
+    while (true)
+    {
+        if (_kbhit())
+        {
+            char key = _getch();
+            float ang = 5.0f;
+
+            if (key == 'a') camYawDeg -= ang;
+            if (key == 'd') camYawDeg += ang;
+
+            if (key == 'w') camPitchDeg += ang;
+            if (key == 's') camPitchDeg -= ang;
+
+            if (key == 'q') camRollDeg += ang;
+            if (key == 'e') camRollDeg -= ang;
+
+            if (key == 'z') camDist -= 0.2f;
+            if (key == 'c') camDist += 0.2f;
+
+            if (key == 'x') break;
+        }
+
+        float camYaw = camYawDeg * degToRad;
+        float camPitch = camPitchDeg * degToRad;
+        float camRoll = camRollDeg * degToRad;
+
+        Vector camPos;
+        camPos.x = camDist * std::cos(camPitch) * std::sin(camYaw);
+        camPos.y = camDist * std::sin(camPitch);
+        camPos.z = camDist * std::cos(camPitch) * std::cos(camYaw);
+
+        Vector center(0.0f, 0.0f, 0.0f);
+
+        Vector forward = (center - camPos);
+        forward.normalize();
+
+        Vector worldUp(0.0f, 1.0f, 0.0f);
+
+        Vector right = forward.cross(worldUp);
+        if (right.length() < 1e-6f)
+        {
+            worldUp = Vector(0.0f, 0.0f, 1.0f);
+            right = forward.cross(worldUp);
+        }
+        right.normalize();
+
+        Vector up = right.cross(forward);
+        up.normalize();
+
+        if (std::fabs(camRoll) > 1e-6f)
+        {
+            Quaternion qRoll = Quaternion::fromAxisAngle(forward, camRoll);
+            right = qRoll.rotate(right);
+            up = qRoll.rotate(up);
+        }
+
+        float fov = 60.0f * degToRad;
+        float halfTan = std::tan(fov * 0.5f);
+        float aspect = float(W) / float(H);
+
+        for (int y = 0; y < H; y++)
+        {
+            for (int x = 0; x < W; x++)
+            {
+                float sx = (2.0f * x / (W - 1) - 1.0f);
+                float sy = (2.0f * y / (H - 1) - 1.0f);
+
+                float px = sx * aspect * halfTan;
+                float py = -sy * halfTan;
+
+                Vector dir = right * px + up * py + forward;
+                dir.normalize();
+
+                Ray ray(camPos, dir);
+                bool hit = intersectCube(ray);
+
+                screen[y][x] = hit ? '0' : '.';
+            }
+        }
+
+        system("cls");
+
+        for (int y = 0; y < H; y++)
+            std::cout << screen[y] << "\n";
+
+        Sleep(10);
+    }
 
     return 0;
 }
+

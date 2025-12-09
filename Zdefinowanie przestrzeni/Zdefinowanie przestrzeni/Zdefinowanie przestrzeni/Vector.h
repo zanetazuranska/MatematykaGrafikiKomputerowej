@@ -15,6 +15,7 @@ public:
     void operator+=(const Vector& v);
     Vector operator+(const Vector& v) const;
     void operator-=(const Vector& v);
+    Vector operator-(const Vector& v);
     void operator/=(float f);
     void operator*=(float f);
     Vector operator*(float f) const;
